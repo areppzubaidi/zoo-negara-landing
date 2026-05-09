@@ -1,0 +1,8 @@
+---
+- name: Configure web servers
+  hosts: _zoo_web_asg
+  become: yes
+  gather_facts: yes
+  roles:
+    - nginx
+    - node_exporter

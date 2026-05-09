@@ -1,0 +1,14 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'node_exporter'
+    ec2_sd_configs:
+      - region: ap-southeast-1
+        port: 9100
+        filters:
+          - name: tag:Name
+            values: ["zoo-web", "zoo-web-asg"]
+    relabel_configs:
+      - source_labels: [__meta_ec2_tag_Name]
+        target_label: instance_name

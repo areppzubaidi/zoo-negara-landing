@@ -1,0 +1,20 @@
+# Terraform state and providers
+*.tfstate
+*.tfstate.*
+.terraform/
+terraform.tfvars
+*.bak
+
+# Duplicated files from earlier errors
+terraform/ansible/
+terraform/templates/
+terraform/playbooks/
+
+# ZIP artifacts
+*.zip
+
+# macOS
+.DS_Store
+
+# Ansible retry files
+*.retry

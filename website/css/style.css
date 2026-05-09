@@ -1,0 +1,288 @@
+/* ===== CSS Custom Properties ===== */
+:root {
+  --color-primary: #2d6a4f;
+  --color-secondary: #ffb703;
+  --color-dark: #1b263b;
+  --color-light: #f8f9fa;
+  --color-white: #ffffff;
+  --font-heading: 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Segoe UI', system-ui, sans-serif;
+  --transition: 0.3s ease;
+}
+
+/* ===== Reset & Base ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  line-height: 1.6;
+  color: var(--color-dark);
+  background: var(--color-white);
+}
+
+.container {
+  width: 92%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+a {
+  text-decoration: none;
+  color: var(--color-primary);
+  transition: color var(--transition);
+}
+
+a:hover, a:focus-visible {
+  color: var(--color-secondary);
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+ul {
+  list-style: none;
+}
+
+/* ===== Header with Flexbox ===== */
+header {
+  background: var(--color-white);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+nav ul {
+  display: flex;
+  gap: 1.5rem;
+}
+
+nav a {
+  font-weight: 500;
+}
+
+/* ===== Buttons ===== */
+.btn-primary,
+.btn-secondary {
+  display: inline-block;
+  padding: 0.75rem 1.8rem;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: all var(--transition);
+}
+
+.btn-primary {
+  background: var(--color-secondary);
+  color: var(--color-dark);
+}
+
+.btn-primary:hover {
+  background: #e09e00;
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  border: 2px solid var(--color-secondary);
+  color: var(--color-secondary);
+}
+
+.btn-secondary:hover {
+  background: var(--color-secondary);
+  color: var(--color-dark);
+}
+
+/* ===== Hero Section ===== */
+.hero {
+  background: linear-gradient(135deg, #1b4332 0%, #40916c 100%);
+  color: var(--color-white);
+  text-align: center;
+  padding: 5rem 1rem;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+/* ===== Sections ===== */
+.section {
+  padding: 4rem 0;
+}
+
+.section h2 {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+  color: var(--color-dark);
+}
+
+.section h2::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: var(--color-secondary);
+  margin: 0.5rem auto 0;
+  border-radius: 4px;
+}
+
+.bg-light {
+  background: #f1f5f9;
+}
+
+.bg-dark {
+  background: var(--color-dark);
+  color: var(--color-white);
+}
+
+.light-text {
+  color: var(--color-white) !important;
+}
+
+/* ===== Grid Layouts ===== */
+.grid-2col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+.grid-3col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+.card {
+  background: var(--color-white);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: box-shadow var(--transition);
+}
+
+.card:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.animal-card {
+  background: var(--color-white);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.animal-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+}
+
+.animal-img {
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+}
+
+.tiger-img { background-image: linear-gradient(45deg, #ff8c00, #e67e22); }   /* placeholder */
+.orangutan-img { background-image: linear-gradient(45deg, #e74c3c, #c0392b); }
+.hornbill-img { background-image: linear-gradient(45deg, #3498db, #2980b9); }
+
+.animal-card h3 {
+  margin: 1rem;
+}
+
+.animal-card p {
+  margin: 0 1rem 1.5rem;
+  color: #555;
+}
+
+.info-card {
+  text-align: center;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.info-card ul {
+  margin-bottom: 1.5rem;
+}
+
+.info-card li {
+  margin-bottom: 0.5rem;
+}
+
+.contact-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+/* ===== Footer ===== */
+footer {
+  background: #0d1b2a;
+  color: #adb5bd;
+  text-align: center;
+  padding: 1.5rem 0;
+  font-size: 0.9rem;
+}
+
+/* ===== Animations (Scroll trigger via Intersection Observer handled by CSS class) ===== */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.fade-in-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== Responsive: Mobile-first, then Tablet & Desktop ===== */
+@media (min-width: 600px) {
+  .grid-2col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .grid-3col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .hero h1 {
+    font-size: 3.5rem;
+  }
+  .grid-3col {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

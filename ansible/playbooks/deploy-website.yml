@@ -1,0 +1,29 @@
+---
+- name: Deploy website to web servers (direct copy)
+  hosts: _zoo_web_asg
+  become: yes
+  tasks:
+    - name: Remove old website files
+      file:
+        path: /var/www/html
+        state: absent
+
+    - name: Recreate web root directory
+      file:
+        path: /var/www/html
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0755'
+
+    - name: Copy website files to server
+      copy:
+        src: /Users/nurariffzubaidi/Devops/zoo-negara-landing/website/
+        dest: /var/www/html/
+        owner: www-data
+        group: www-data
+
+    - name: Restart Nginx
+      systemd:
+        name: nginx
+        state: restarted
