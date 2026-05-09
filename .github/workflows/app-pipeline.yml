@@ -16,7 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Lint HTML and CSS
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -31,9 +30,8 @@ jobs:
       - name: Lint CSS
         run: stylelint "website/css/*.css"
 
-      # Docker test
       - name: Build Docker test image
-        run: docker build -t zoo-test -f docker/Dockerfile .
+        run: docker build -t zoo-test .
 
       - name: Run container and check
         run: |
@@ -42,11 +40,6 @@ jobs:
           curl --fail http://localhost:8080 || exit 1
           docker stop test-nginx && docker rm test-nginx
 
-      # Prepare artifact (zip or just sync folder)
-      - name: Compress website (optional, but we'll use aws s3 sync)
-        run: zip -r website-artifact.zip website
-
-      # Upload to S3 artifact bucket
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -54,20 +47,51 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
-      - name: Upload to S3 (versioned artifact)
+      - name: Upload artifact to S3
         run: |
+          zip -r website-artifact.zip website
           aws s3 cp website-artifact.zip s3://$S3_BUCKET/website-${GITHUB_SHA}.zip
           aws s3 cp website-artifact.zip s3://$S3_BUCKET/website-latest.zip
 
-      # Deploy using Ansible playbook (pull artifact from S3)
       - name: Install Ansible
         run: pip install ansible boto3
 
-      - name: Run deploy playbook
+      - name: Run Ansible deploy (local copy method)
         working-directory: ansible
         run: |
-          ansible-playbook playbooks/deploy-website.yml \
+          # Write a temporary deploy playbook that copies from the runner
+          cat << 'EOF' > playbooks/deploy-website-ci.yml
+          - name: Deploy website from CI
+            hosts: _zoo_web_asg
+            become: yes
+            tasks:
+              - name: Remove old website files
+                file:
+                  path: /var/www/html
+                  state: absent
+              - name: Recreate web root
+                file:
+                  path: /var/www/html
+                  state: directory
+                  owner: www-data
+                  group: www-data
+                  mode: '0755'
+              - name: Copy website from local workspace
+                copy:
+                  src: ../website/
+                  dest: /var/www/html/
+                  owner: www-data
+                  group: www-data
+              - name: Restart Nginx
+                systemd:
+                  name: nginx
+                  state: restarted
+          EOF
+          ansible-playbook playbooks/deploy-website-ci.yml \
             -i inventory/aws_ec2.yml \
-            --extra-vars "artifact_path=s3://$S3_BUCKET/website-latest.zip build_sha=${GITHUB_SHA}" \
-            --private-key ${{ secrets.SSH_PRIVATE_KEY }} \
+            --private-key <(echo "${{ secrets.SSH_PRIVATE_KEY }}") \
             -u ubuntu
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
